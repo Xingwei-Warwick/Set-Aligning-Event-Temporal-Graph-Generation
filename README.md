@@ -1,6 +1,8 @@
 # Set-Aligning-Event-Temporal-Graph-Generation
 This is the repository of the experimental code and data of "Set-Aligning Framework for Auto-Regressive Event Temporal Graph Generation" (NAACL 2024)
 
+To repoduce the SAF results, follow the steps below one-by-one.
+
 
 ## Prepare the dataset
 Download the NYT corpus and save it as *NYT_annotated* under this directory
@@ -26,6 +28,10 @@ python get_target_graphs.py --input-dir data/caevo_outputs --select-file-path da
 python get_target_graphs.py --input-dir data/caevo_outputs --select-file-path data/test_file_ids.json --output-path data/NYT_des_test.json
 ```
 
+## Prepare offset mapping for SPR caliberation
+```
+python prepare_offset.py --data_path data/NYT_des_train.json
+```
 
 ## Training a flan-T5-base with set aligning framework
 ```
