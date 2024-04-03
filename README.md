@@ -1,7 +1,7 @@
 # Set-Aligning-Event-Temporal-Graph-Generation
 This is the repository of the experimental code and data of "Set-Aligning Framework for Auto-Regressive Event Temporal Graph Generation" (NAACL 2024)
 
-If our paper and code helps, please consider adding the following reference in your research:
+If our paper and code help, please consider adding the following reference in your research:
 ```
 @misc{tan2024setaligning,
       title={Set-Aligning Framework for Auto-Regressive Event Temporal Graph Generation}, 
