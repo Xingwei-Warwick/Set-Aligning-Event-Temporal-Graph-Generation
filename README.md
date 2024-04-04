@@ -15,6 +15,8 @@ If our paper and code help, please consider adding the following reference in yo
 
 To repoduce the SAF results, follow the steps below one-by-one.
 
+The human annotated test set and evaluation code are coming soon
+
 
 ## Prepare the dataset
 Download the NYT corpus and save it as *NYT_annotated* under this directory
