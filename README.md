@@ -52,4 +52,7 @@ python prepare_offset.py --data_path data/NYT_des_train.json
 sh training_script.sh
 ```
 
-
+## Run the evaluation script
+```
+sh eval_script.sh
+```
