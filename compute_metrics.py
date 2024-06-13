@@ -25,7 +25,6 @@ if __name__ == "__main__":
     else:
         exit(0)
 
-    allen_api = Allen_api()
     total_generated = 1e-5
     total_gold = 0
     tp = 1e-5
@@ -36,17 +35,18 @@ if __name__ == "__main__":
     node_tp = 1e-5
     node_fp = 0
     node_fn = 0
-
-    iso = 0
-    ged = 0
+    gold_rel_dist = {}
+    gen_rel_dist = {}
+    total_gen_degree_count = 0
+    
     for doc_id in test_dict:
         generated_node_set = set()
         gold_node_set = set()
-        test_doc = test_dict[doc_id]['document']
         gold_graph = test_dict[doc_id]['gold']
         total_gold += len(gold_graph)
         edge_list = test_dict[doc_id]['generated']
         total_generated += len(edge_list)
+        degree_count = {}
 
         retrieved_gold = set()
         for gold_e1, gold_rel, gold_e2 in gold_graph:
@@ -56,24 +56,39 @@ if __name__ == "__main__":
                 gold_e2 = gold_e2[:-1]
             gold_node_set.add(gold_e1)
             gold_node_set.add(gold_e2)
+            gold_rel_dist[gold_rel] = gold_rel_dist.get(gold_rel, 0) + 1
         for e1, rel, e2 in edge_list:
             generated_node_set.add(e1)
             generated_node_set.add(e2)
-            e1_verb = get_verbs(allen_api.query(e1)) # use allen api to find the trigger word
-            e2_verb = get_verbs(allen_api.query(e2))
-            #print(e1, e1_verb, e2, e2_verb)
             found = False
+
+            gen_rel_dist[rel] = gen_rel_dist.get(rel, 0) + 1
+
+            gen_e1_words = " ".join(e1.split())
+            gen_e2_words = " ".join(e2.split())
+            degree_count[gen_e1_words] = degree_count.get(gen_e1_words, 0) + 1
+            degree_count[gen_e2_words] = degree_count.get(gen_e2_words, 0) + 1
+            e1_word_set = set(e1.split())
+            e2_word_set = set(e2.split())
             for gold_e1, gold_rel, gold_e2 in gold_graph:
-                # if the predicted event's trigger word is in the gold event
-                if gold_e1[-1] == ' ' or gold_e1[-1] == '\n':
-                    gold_e1 = gold_e1[:-1]
-                if gold_e2[-1] == ' ' or gold_e2[-1] == '\n':
-                    gold_e2 = gold_e2[:-1]
-                
-                if rel == gold_rel and e1_verb in gold_e1.split() and e2_verb in gold_e2.split():
+                gold_e1_words = " ".join(gold_e1.split())
+                gold_e2_words = " ".join(gold_e2.split())
+                gold_e1_word_set = set(gold_e1.split())
+                gold_e2_word_set = set(gold_e2.split())
+
+                if rel == gold_rel and len(gold_e1_word_set-e1_word_set)==0 and len(gold_e2_word_set-e2_word_set)==0:
                     key = f"{gold_e1}||{gold_rel}||{gold_e2}"
-                    retrieved_gold.add(key)
-                    found = True
+                    if key not in retrieved_gold:
+                        retrieved_gold.add(key)
+                        found = True
+                        break
+                
+                if gold_rel == "simultaneous" and rel == "simultaneous" and len(gold_e1_word_set-e2_word_set)==0 and len(gold_e2_word_set-e1_word_set)==0:
+                    key = f"{gold_e1}||{gold_rel}||{gold_e2}"
+                    if key not in retrieved_gold:
+                        retrieved_gold.add(key)
+                        found = True
+                        break
 
             if found:
                 tp += 1
@@ -85,11 +100,15 @@ if __name__ == "__main__":
         total_generated_node += len(generated_node_set)
         total_gold_node += len(gold_node_set)
         retrieved_gold_node = set()
+
         for generated_node in generated_node_set:
             found = False
-            node_verb = get_verbs(allen_api.query(generated_node)) 
+            node_words = " ".join(generated_node.split())
+            node_word_set = set(generated_node.split())
             for gold_node in gold_node_set:
-                if node_verb in gold_node.split():
+                gold_node_words = " ".join(gold_node.split())
+                gold_node_word_set = set(gold_node.split())
+                if len(gold_node_word_set-node_word_set)==0 and gold_node not in retrieved_gold_node:
                     found = True
                     retrieved_gold_node.add(gold_node)
             if found:
@@ -97,18 +116,26 @@ if __name__ == "__main__":
             else:
                 node_fp += 1
         node_fn += len(gold_node_set) - len(retrieved_gold_node)
+        total_gen_degree_count += sum(degree_count.values())
 
-                
+
     print("="*10 + "Edge Metrics" + "="*10)
-    print(f"Total generated: {total_generated}\nTotal gold: {total_gold}")
+    print(f"Total generated: {total_generated}\nTotal gold: {total_gold}\nMatched: {tp}")
     recall = tp / total_gold
     precision = tp / total_generated
     f1 = 2 * recall * precision / (recall + precision)
     print(f"F1: {f1}, Recall: {recall}, Precision: {precision}")
         
     print("="*10 + "Node Metrics" + "="*10)
-    print(f"Total generated: {total_generated_node}\nTotal gold: {total_gold_node}")
+    print(f"Total generated: {total_generated_node}\nTotal gold: {total_gold_node}\nMatched: {node_tp}")
     recall = node_tp / total_gold_node
     precision = node_tp / total_generated_node
     f1 = 2 * recall * precision / (recall + precision)
     print(f"F1: {f1}, Recall: {recall}, Precision: {precision}")
+    print("gold graph temporal rel type distribution:")
+    print(gold_rel_dist)
+    print("generated graph temporal rel type distribution:")
+    print(gen_rel_dist)
+
+    print("average degree count:")
+    print(total_gen_degree_count / total_generated_node)
