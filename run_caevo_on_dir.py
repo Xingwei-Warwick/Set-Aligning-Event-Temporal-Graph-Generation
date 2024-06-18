@@ -18,16 +18,18 @@ if __name__ == "__main__":
 
     for idx, file in enumerate(file_list):
         if file.split('.')[-1] == 'txt':
-            command = f"{args.caevo_path}/runcaevoraw.sh {args.path}/{file}"
+            command = f"{args.caevo_path}/runcaevoraw.sh {args.input_dir}/{file}"
             process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
             output, error = process.communicate()
 
             error = error.decode("utf-8")
 
+            print(error)
+
             new_file_name = f"{file}.info.xml"
-            if isfile(f"{args.path}/{new_file_name}"):
-                command = f"mv {args.path}/{new_file_name} {args.out_dir}/"
+            if isfile(f"{args.caevo_path}/{new_file_name}"):
+                command = f"mv {args.caevo_path}/{new_file_name} {args.out_dir}/"
                 process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 print(f"{file} finished! {len(file_list)-idx-1} left")
             else:

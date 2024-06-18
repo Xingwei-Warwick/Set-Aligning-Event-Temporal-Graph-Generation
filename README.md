@@ -24,11 +24,11 @@ Download CAEVO source code from [https://github.com/nchambers/caevo](https://git
 ```
 mkdir data/caevo_inputs
 
-python get_nyt_data.py --select_from_ids_file data/train_file_ids.json --output_path data/caevo_inputs
+python get_nyt_data.py --select_from_ids_file data/train_file_ids.json --output_dir data/caevo_inputs
 
-python get_nyt_data.py --select_from_ids_file data/test_file_ids.json --output_path data/caevo_inputs
+python get_nyt_data.py --select_from_ids_file data/test_file_ids.json --output_dir data/caevo_inputs
 
-python get_nyt_data.py --select_from_ids_file data/nyt_human_ids.json --output_path data/caevo_inputs
+python get_nyt_data.py --select_from_ids_file data/nyt_human_ids.json --output_dir data/caevo_inputs
 
 mkdir data/caevo_outputs
 
