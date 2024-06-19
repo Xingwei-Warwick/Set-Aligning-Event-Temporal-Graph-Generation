@@ -3,13 +3,22 @@ This is the repository of the experimental code and data of "Set-Aligning Framew
 
 If our paper and code help, please consider adding the following reference in your research:
 ```
-@misc{tan2024setaligning,
-      title={Set-Aligning Framework for Auto-Regressive Event Temporal Graph Generation}, 
-      author={Xingwei Tan and Yuxiang Zhou and Gabriele Pergola and Yulan He},
-      year={2024},
-      eprint={2404.01532},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL}
+@inproceedings{tan-etal-2024-set,
+    title = "Set-Aligning Framework for Auto-Regressive Event Temporal Graph Generation",
+    author = "Tan, Xingwei  and
+      Zhou, Yuxiang  and
+      Pergola, Gabriele  and
+      He, Yulan",
+    editor = "Duh, Kevin  and
+      Gomez, Helena  and
+      Bethard, Steven",
+    booktitle = "Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (Volume 1: Long Papers)",
+    month = jun,
+    year = "2024",
+    address = "Mexico City, Mexico",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.naacl-long.214",
+    pages = "3872--3892",
 }
 ```
 
